@@ -18,7 +18,7 @@
     </div>
 </div>
 <div class="container mt-4" id="main" style="display: none">
-    <p class="lead">Services | <span id="up" style="color: #198754"></span>/<span id="total" style="color: #198754"></span></p>
+    <p class="lead"><b>Services</b> | <span id="up" style="color: #198754"></span> / <span id="total" style="color: #198754"></span></p>
     <div class="progress" style="height: 30px">
         <div id="progress" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%; font-size: 20px"></div>
     </div>
@@ -38,13 +38,13 @@
            $("#loading").css("display", "none")
            $("#up").html(data.up)
            $("#total").html(data.total)
-           $("#progress").attr("aria-valuenow", `${data.up / data.total * 100}`).css("width", `${data.up / data.total * 100}%`).html(`${data.up / data.total * 100}%`)
+           $("#progress").attr("aria-valuenow", `${data.up / data.total * 100}`).css("width", `${data.up / data.total * 100}%`).html(`${Math.ceil(data.up / data.total * 10000) / 100}%`)
            let content = ""
            for (let m of data.monitors) {
                content += `<li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold"><a class="navbar-brand" href="${m.url}">${m.name}</a></div>
-                        <span style="color: #198754">${Number(m.ratio).toFixed(2)}%</span>
+                        <span style="color: #198754">${Math.ceil(Number(m.ratio) * 100) / 100}%</span>
                     </div>
                     ${m.status === 2 ? `<span class="badge bg-success">Up</span>` : `<span class="badge bg-danger">Down</span>`}
                 </li>`
