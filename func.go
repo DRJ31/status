@@ -68,6 +68,7 @@ func getMonitors(c *fiber.Ctx) error {
 		m.Name = monitor.FriendlyName
 		m.Ratio = monitor.CustomUptimeRatio
 		m.Status = monitor.Status
+		m.Logs = monitor.Logs
 		if m.Status == 2 {
 			ret.Up += 1
 		}

@@ -47,6 +47,7 @@ type LightMonitor struct {
 	Url    string `json:"url"`
 	Status uint   `json:"status"`
 	Ratio  string `json:"ratio"`
+	Logs   []Log  `json:"logs"`
 }
 
 type Ret struct {
