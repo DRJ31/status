@@ -19,7 +19,7 @@ type Log struct {
 	Id       uint   `json:"id"`
 	Type     uint   `json:"type"`
 	Datetime uint   `json:"datetime"`
-	Duration uint   `json:"duration"`
+	Duration int    `json:"duration"`
 	Reason   Reason `json:"reason"`
 }
 
