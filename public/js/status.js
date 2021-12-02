@@ -9,10 +9,11 @@ function getDateTime(datetime) {
 }
 
 function getHms(duration) {
-    const hour = Math.floor(duration / 3600)
-    const minute = Math.floor((duration - hour * 3600) / 60)
-    const second = duration - hour * 3600 - minute * 60
-    return { hour, minute, second }
+    const day = Math.floor(duration / (3600 * 24))
+    const hour = Math.floor((duration - day * 3600 * 24) / 3600)
+    const minute = Math.floor((duration - hour * 3600 - day * 3600 * 24) / 60)
+    const second = duration - hour * 3600 - minute * 60 - day * 3600 * 24
+    return { day, hour, minute, second }
 }
 
 function setReason(log) {
@@ -32,11 +33,11 @@ function setLogs(name) {
     let content = ""
 
     for (let l of logs[name]) {
-        const { hour, minute, second } = getHms(Math.abs(l.duration))
+        const { day, hour, minute, second } = getHms(Math.abs(l.duration))
         content += `<tr>
                             <td>${getDateTime(l.datetime)}</td>
                             <td>${setReason(l)}</td>
-                            <td>${hour}hrs, ${minute}mins, ${second}secs</td>
+                            <td>${day}d ${hour}h ${minute}m ${second}s</td>
                         </tr>`
     }
 
