@@ -55,7 +55,7 @@ function showAlert(message, type) {
 }
 
 $(document).ready(function () {
-    $.get("/api/s", (data) => {
+    $.get("/api", (data) => {
         const logs = {}
         $("#year").html(new Date().getFullYear())
         $("#main").css("display", "block")
