@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:focal
 
 WORKDIR /app
 COPY status  /app
