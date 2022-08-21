@@ -1,10 +1,9 @@
-FROM ubuntu:focal
+FROM alpine
 
 WORKDIR /app
 COPY status  /app
 COPY public/ /app/public
-RUN apt update
-RUN apt install -y ca-certificates
+RUN apk add --no-cache gcompat ca-certificates
 
 CMD ["./status"]
 
