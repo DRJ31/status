@@ -2,17 +2,24 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/DRJ31/status/model"
 	"github.com/DRJ31/status/service"
+	"github.com/go-redis/redis/v8"
 	"io"
 	"log"
 	"net/http"
+	"time"
 )
+
+var ctx context.Context
 
 const (
 	WX_MSG_API = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="
+	REDIS_KEY  = "uptime_robot_record"
 )
 
 func sendMsg(monitors []model.Monitor) {
@@ -48,20 +55,64 @@ func sendMsg(monitors []model.Monitor) {
 	fmt.Println(string(body))
 }
 
+func handleDownSites(rdb *redis.Client, monitors []model.Monitor) {
+	if len(monitors) > 0 {
+		monitorsByte, _ := json.Marshal(monitors)
+		// Check if message has sent within an hour
+		cachedMonitors, err := rdb.Get(ctx, REDIS_KEY).Bytes()
+		if errors.Is(err, redis.Nil) {
+			sendMsg(monitors)
+			rdb.Set(ctx, REDIS_KEY, monitorsByte, time.Hour)
+			return
+		}
+
+		// Check the content of monitor in redis
+		var cms []model.Monitor
+		var incomplete bool
+		err = json.Unmarshal(cachedMonitors, &cms)
+		if err != nil {
+			sendMsg(monitors)
+			rdb.Set(ctx, REDIS_KEY, monitorsByte, time.Hour)
+			return
+		}
+
+		// Check if the two lists are the same
+		for _, cm := range cms {
+			incomplete = true
+			for _, m := range monitors {
+				if cm.Url == m.Url {
+					incomplete = false
+					break
+				}
+			}
+			if incomplete {
+				sendMsg(monitors)
+				rdb.Set(ctx, REDIS_KEY, monitorsByte, time.Hour)
+				return
+			}
+		}
+
+	}
+}
+
 func main() {
-	service.GetConfig()
+	rdb := service.InitRedis()
+	defer rdb.Close()
+
+	// Get data
 	gm, err := service.GetData()
 	if err != nil {
 		panic(err)
 	}
+
+	// Filter down websites
 	downMonitors := make([]model.Monitor, 0)
 	for _, monitor := range gm.Monitors {
 		if monitor.Status != 2 {
 			downMonitors = append(downMonitors, monitor)
 		}
 	}
-	if len(downMonitors) > 0 {
-		sendMsg(downMonitors)
-	}
+
+	handleDownSites(rdb, downMonitors)
 	log.Println("Finish")
 }

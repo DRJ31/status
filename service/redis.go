@@ -6,8 +6,9 @@ import (
 )
 
 func InitRedis() *redis.Client {
+	cf := GetConfig()
 	return redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%v:%v", cfg.RedisHost, cfg.RedisPort),
+		Addr:     fmt.Sprintf("%v:%v", cf.RedisHost, cf.RedisPort),
 		Password: "",
 		DB:       0,
 	})

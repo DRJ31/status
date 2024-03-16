@@ -5,3 +5,5 @@
 config.json
 status
 status.exe
+script/script
+.DS_Store

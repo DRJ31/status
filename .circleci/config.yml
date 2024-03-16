@@ -11,6 +11,12 @@ jobs:
           fingerprints:
             - "SHA256:N14dawQw0mkucf+EuKqi98Z124GNapu4gc+yKHkaR9M"
       - run:
+          name: Build script
+          command: |
+            cd script
+            GOARCH=amd64 GOOS=linux go build
+            cd ..
+      - run:
           name: Build Docker Image
           command: docker build -t $IMAGE_NAME .
       - run:
@@ -22,5 +28,6 @@ jobs:
           name: Deploy
           command: |
             ssh-keyscan -t rsa $HOST >> ~/.ssh/known_hosts
+            scp script/script $USER@$HOST:$SCRIPT_PATH
             ssh $USER@$HOST < deploy.sh
             curl -L https://uich.cc/notify | bash
