@@ -3,49 +3,25 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/DRJ31/status/model"
+	"github.com/DRJ31/status/service"
 	"github.com/gofiber/fiber/v2"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"strings"
 	"time"
 )
 
 var ctx = context.Background()
 
-func getData() (GetMonitors, error) {
-	cf := getConfig()
-	url := "https://api.uptimerobot.com/v2/getMonitors"
-
-	payload := strings.NewReader(fmt.Sprintf("api_key=%v&format=json&logs=1&custom_uptime_ratios=7", cf.Key))
-
-	req, _ := http.NewRequest("POST", url, payload)
-
-	req.Header.Add("content-type", "application/x-www-form-urlencoded")
-	req.Header.Add("cache-control", "no-cache")
-
-	res, _ := http.DefaultClient.Do(req)
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	var data GetMonitors
-	err := json.Unmarshal(body, &data)
-
-	return data, err
-}
-
 func getMonitors(c *fiber.Ctx) error {
 	// Initialize Redis
-	rdb := initRedis()
+	rdb := service.InitRedis()
 	defer rdb.Close()
 
 	byteData, err := rdb.Get(ctx, "status_cache").Bytes()
-	var data GetMonitors
+	var data model.GetMonitors
 	if err != nil {
 		log.Println(err)
-		data, err = getData()
+		data, err = service.GetData()
 		if err != nil {
 			return err
 		}
@@ -55,15 +31,15 @@ func getMonitors(c *fiber.Ctx) error {
 		err = json.Unmarshal(byteData, &data)
 	}
 
-	var ret Ret
+	var ret model.Ret
 
 	ret.Up = 0
 	ret.Total = 0
-	ret.Monitors = make([]LightMonitor, 0)
+	ret.Monitors = make([]model.LightMonitor, 0)
 
 	for _, monitor := range data.Monitors {
 		ret.Total += 1
-		var m LightMonitor
+		var m model.LightMonitor
 		m.Url = monitor.Url
 		m.Name = monitor.FriendlyName
 		m.Ratio = monitor.CustomUptimeRatio

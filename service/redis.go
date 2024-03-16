@@ -1,14 +1,13 @@
-package main
+package service
 
 import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 )
 
-func initRedis() *redis.Client {
-	cf := getConfig()
+func InitRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%v:%v", cf.RedisHost, cf.RedisPort),
+		Addr:     fmt.Sprintf("%v:%v", cfg.RedisHost, cfg.RedisPort),
 		Password: "",
 		DB:       0,
 	})

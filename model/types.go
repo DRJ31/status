@@ -1,4 +1,4 @@
-package main
+package model
 
 type Config struct {
 	Host      string `json:"host"`
@@ -6,6 +6,7 @@ type Config struct {
 	RedisHost string `json:"redis_host"`
 	RedisPort uint   `json:"redis_port"`
 	Key       string `json:"key"`
+	WxBotKey  string `json:"wx_bot_key"`
 }
 
 // JSON return types
@@ -54,4 +55,11 @@ type Ret struct {
 	Up       uint           `json:"up"`
 	Total    uint           `json:"total"`
 	Monitors []LightMonitor `json:"monitors"`
+}
+
+type WxMsgMarkdown struct {
+	Msgtype  string `json:"msgtype"`
+	Markdown struct {
+		Content string `json:"content"`
+	} `json:"markdown"`
 }

