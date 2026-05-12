@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/DRJ31/status/service"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/compress"
+	"github.com/gofiber/fiber/v3/middleware/static"
 )
 
 func initRouter(app *fiber.App) {
-	app.Static("/", "./public")
 	app.Get("/api", getMonitors)
+	app.Use("/", static.New("./public"))
 }
 
 func main() {

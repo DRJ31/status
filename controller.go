@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"github.com/DRJ31/status/model"
 	"github.com/DRJ31/status/service"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"log"
 	"time"
 )
 
 var ctx = context.Background()
 
-func getMonitors(c *fiber.Ctx) error {
+func getMonitors(c fiber.Ctx) error {
 	// Initialize Redis
 	rdb := service.InitRedis()
 	defer rdb.Close()

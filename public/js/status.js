@@ -71,7 +71,7 @@ $(document).ready(function () {
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">
                             <a class="navbar-brand" href="${m.url}">${m.name}</a>
-                            <i class="fas fa-info-circle" data-bs-toggle="modal" data-bs-target="#logModal" onclick="setLogs('${m.name}')"></i>
+                            <i class="fa-solid fa-circle-info" data-bs-toggle="modal" data-bs-target="#logModal" onclick="setLogs('${m.name}')"></i>
                         </div>
                         <span style="color: #198754">${Math.ceil(Number(m.ratio) * 100) / 100}%</span>
                     </div>

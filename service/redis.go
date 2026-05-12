@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 func InitRedis() *redis.Client {

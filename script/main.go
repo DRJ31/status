@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"github.com/DRJ31/status/model"
 	"github.com/DRJ31/status/service"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"io"
 	"log"
 	"net/http"
 	"time"
 )
 
-var ctx context.Context
+var ctx = context.Background()
 
 const (
 	WX_MSG_API = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="
@@ -39,6 +39,9 @@ func sendMsg(monitors []model.Monitor) {
 		panic(err)
 	}
 	req, err := http.NewRequest("POST", loc, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		panic(err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
