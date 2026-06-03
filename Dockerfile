@@ -1,4 +1,4 @@
-FROM golang:1.26-alpine AS builder
+FROM golang:1.26.4-alpine AS builder
 
 ADD ./ /app
 
@@ -17,4 +17,3 @@ RUN apk add --no-cache ca-certificates gcompat
 
 CMD ["./status"]
 EXPOSE 3000
-
